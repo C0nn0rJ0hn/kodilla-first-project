@@ -4,19 +4,19 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
-import static java.lang.Double.MAX_VALUE;
 
 public class Main extends Application {
 
@@ -61,6 +61,7 @@ public class Main extends Application {
         ShipMoves ship1Moves = new ShipMoves(ship1Cell, moves, shipBoat);
         ship1Moves.createMoves();
 
+
         Ship ship2Cells = new Ship(40, 120, 40, 80, shipPatrolBoat);
         ShipMoves ship2Moves = new ShipMoves(ship2Cells, moves, shipPatrolBoat);
         ship2Moves.createMoves();
@@ -81,6 +82,78 @@ public class Main extends Application {
         ShipMoves ship6Moves = new ShipMoves(ship5Cells, moves, shipCarrier);
         ship6Moves.createMoves();
 
+        //Enemy board ships
+        CreateShips enemyBoat = new CreateShips(Color.TRANSPARENT, Color.BLACK);
+        CreateShips enemyPatrolBoat = new CreateShips(Color.TRANSPARENT, Color.BLACK);
+        CreateShips enemySubmarine = new CreateShips(Color.TRANSPARENT, Color.BLACK);
+
+        Random r = new Random();
+        int randomX = (r.nextInt(10) + 1) * 40;
+        int randomY = (r.nextInt(10) + 1) * 40;
+        //System.out.println(randomX + " " + randomY);
+
+        /////////////////////////////////////////////////////////
+
+        Ship enemyShip2Cells = new Ship(240, 240, 40, 80, enemyPatrolBoat);
+        //enemyShip2Cells.makeVertical();
+
+        Ship enemyShip3Cells = new Ship(80, 80, 40, 120, enemySubmarine);
+        enemyShip3Cells.makeVertical();
+
+        Ship enemyShip1Cell = new Ship(80, 320, 40, 40, enemyBoat);
+
+        List<Ship> enemyShips = List.of(enemyShip1Cell, enemyShip2Cells, enemyShip3Cells);
+
+
+        //Horizontal ship
+        /*if (enemyShip2Cells.getShipX() == 400)
+        {
+            enemyShip2Cells.setShipX(enemyShip2Cells.getShipX() - (enemyShip2Cells.getShipWidth()/2));
+        }
+        if (enemyShip2Cells.getShipX() == 400)
+        {
+            enemyShip2Cells.setShipX(enemyShip2Cells.getShipX() - (enemyShip2Cells.getShipWidth()/2));
+        }
+        enemyShip2Cells.shipDraw();
+        enemyBoard.getChildren().add(enemyPatrolBoat);*/
+
+
+        //Shooting to target - missed
+        enemyBoard.setOnMousePressed(event ->
+        {
+            for(Ship checkShip : enemyShips)
+            {
+                if (checkShip.getShipX() == enemyBoard.getBoardX() && checkShip.getShipY() == enemyBoard.getBoardY())
+                {
+                    Rectangle hit = new Rectangle(40,40);
+                    hit.setX(enemyBoard.getBoardX());
+                    hit.setY(enemyBoard.getBoardY());
+                    hit.setFill(Color.RED);
+                    hit.setStroke(Color.BLACK);
+                    enemyBoard.getChildren().addAll(hit);
+                }
+                if (checkShip.getLowerBoundsX() <= enemyBoard.getBoardX() && enemyBoard.getBoardX() <= checkShip.getUpperBoundsX()
+                && checkShip.getLowerBoundsY() <= enemyBoard.getBoardY() && enemyBoard.getBoardY() <= checkShip.getUpperBoundsY())
+                {
+                    Rectangle hit2 = new Rectangle(40,40);
+                    hit2.setX(enemyBoard.getBoardX());
+                    hit2.setY(enemyBoard.getBoardY());
+                    hit2.setFill(Color.RED);
+                    hit2.setStroke(Color.BLACK);
+                    enemyBoard.getChildren().addAll(hit2);
+                }
+                else
+                {
+                    int centerX = enemyBoard.getBoardX() + 20;
+                    int centerY = enemyBoard.getBoardY() + 20;
+                    Circle circle = new Circle(centerX, centerY, 7, Color.BLACK);
+                    enemyBoard.getChildren().addAll(circle);
+                }
+            }
+        });
+
+
+        ////////////////////////////////////////////////////////////
         //Create buttons
         Buttons boat = new Buttons("Boat");
         Buttons patrolBoat = new Buttons("Patrol Boat");
@@ -143,8 +216,4 @@ public class Main extends Application {
         window.show();
     }
 
-    private void drawShipsEnemyBoard()
-    {
-        Random r = new Random();
-    }
 }

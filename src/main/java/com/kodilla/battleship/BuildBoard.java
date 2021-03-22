@@ -11,7 +11,17 @@ import javafx.scene.text.Font;
 
 public class BuildBoard extends Pane {
 
+    private int columnNumber;
+    private int rowNumber;
+    private int cellSize;
+    private int boardX;
+    private int boardY;
+
     public BuildBoard(int columnNumber, int rowNumber, int cellSize) {
+
+        this.columnNumber = columnNumber;
+        this.rowNumber = rowNumber;
+        this.cellSize = cellSize;
 
         for (int i = 0; i < columnNumber; i++)
         {
@@ -24,6 +34,11 @@ public class BuildBoard extends Pane {
                 numeric.setTextFill(Color.YELLOW);
 
                 Rectangle boardCell = new Rectangle(i * cellSize, j * cellSize, cellSize, cellSize);
+                boardCell.setOnMouseEntered(event ->
+                {
+                    boardX = (int)boardCell.getX();
+                    boardY = (int)boardCell.getY();
+                });
                 boardCell.setStroke(Color.BLACK);
                 StackPane stackPane = new StackPane();
 
@@ -60,5 +75,15 @@ public class BuildBoard extends Pane {
                 getChildren().addAll(boardCell, stackPane);
             }
         }
+    }
+
+    public int getBoardX()
+    {
+        return boardX;
+    }
+
+    public int getBoardY()
+    {
+        return boardY;
     }
 }

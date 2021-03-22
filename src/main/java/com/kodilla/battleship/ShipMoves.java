@@ -14,7 +14,6 @@ public class ShipMoves
 
     public void createMoves()
     {
-
         createShip.setOnMouseDragged(event ->
         {
             move.dragged(event, ship);
@@ -22,7 +21,9 @@ public class ShipMoves
 
         createShip.setOnMouseReleased(event ->
         {
-            move.released(event, ship);
+            move.released(ship);
+            System.out.println(ship.getShipX());
+            System.out.println(ship.getShipY());
         });
 
         createShip.setOnMousePressed(event ->
@@ -31,6 +32,5 @@ public class ShipMoves
         });
 
         ship.shipDraw();
-
     }
 }

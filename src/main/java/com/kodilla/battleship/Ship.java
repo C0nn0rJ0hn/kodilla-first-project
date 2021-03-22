@@ -11,6 +11,14 @@ public class Ship
     private double shipWidth;
     private Rectangle ship;
 
+    private double lowerBoundsX;
+    private double lowerBoundsY;
+    private double upperBoundsX;
+    private double upperBoundsY;
+
+    int actualWidth;
+    int actualHeight;
+
     public Ship(double shipX, double shipY, double shipHeight, double shipWidth, Rectangle ship) {
         this.shipX = shipX;
         this.shipY = shipY;
@@ -63,5 +71,49 @@ public class Ship
     public void setShipColor(Color color)
     {
         ship.setFill(color);
+    }
+
+    public void makeVertical()
+    {
+        actualWidth = (int)shipWidth;
+        actualHeight = (int)shipHeight;
+
+        setShipWidth(actualHeight);
+        setShipHeight(actualWidth);
+    }
+
+    public double getLowerBoundsX() {
+        lowerBoundsX = shipX;
+        return lowerBoundsX;
+    }
+
+    public double getUpperBoundsX() {
+        if (shipWidth == 40)
+        {
+            upperBoundsX = shipX;
+        }
+        else
+        {
+            upperBoundsX = shipX + shipWidth - 40;
+
+        }
+        return upperBoundsX;
+    }
+
+    public double getLowerBoundsY() {
+        lowerBoundsY = shipY;
+        return lowerBoundsY;
+    }
+
+    public double getUpperBoundsY() {
+        if (shipHeight == 40)
+        {
+            upperBoundsY = shipY;
+        }
+        else
+        {
+            upperBoundsY = shipY + shipHeight - 40;
+        }
+        return upperBoundsY;
     }
 }
