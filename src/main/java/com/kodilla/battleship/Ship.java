@@ -90,7 +90,7 @@ public class Ship
     public double getUpperBoundsX() {
         if (shipWidth == 40)
         {
-            upperBoundsX = shipX;
+            upperBoundsX = shipX + 20;
         }
         else
         {
@@ -108,12 +108,33 @@ public class Ship
     public double getUpperBoundsY() {
         if (shipHeight == 40)
         {
-            upperBoundsY = shipY;
+            upperBoundsY = shipY + 20;
         }
         else
         {
             upperBoundsY = shipY + shipHeight - 40;
         }
         return upperBoundsY;
+    }
+
+    public boolean isHited(int boardX, int boardY)
+    {
+        if ((getShipX() == boardX && getShipY() == boardY) || (getLowerBoundsX() <= boardX &&
+            boardX <= getUpperBoundsX() && getLowerBoundsY() <= boardY && boardY <= getUpperBoundsY()))
+        {
+            System.out.println("Ship X: " + getShipX());
+            System.out.println("Ship Y: " + getShipY());
+            System.out.println("Lower X: " + getLowerBoundsX());
+            System.out.println("Upper X: " + getUpperBoundsX());
+            System.out.println("Lower Y: " + getLowerBoundsY());
+            System.out.println("Upper Y: " + getUpperBoundsY());
+            System.out.println("Board X: " + boardX);
+            System.out.println("Board Y: " + boardY);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

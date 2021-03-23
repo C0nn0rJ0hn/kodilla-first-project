@@ -6,6 +6,9 @@ import javafx.scene.paint.Color;
 
 public class Moves
 {
+    private double actualShipX;
+    private double actualShipY;
+
     public void dragged(MouseEvent event, Ship ship) {
         double eventX = event.getX();
         double eventY = event.getY();
@@ -22,6 +25,9 @@ public class Moves
         ship.setShipY(y * 40);
         ship.setShipColor(Color.BLUE);
         ship.shipDraw();
+
+        actualShipX = ship.getShipX();
+        actualShipY = ship.getShipY();
     }
 
     public void pressed(MouseEvent event, Ship ship) {

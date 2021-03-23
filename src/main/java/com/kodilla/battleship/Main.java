@@ -66,6 +66,7 @@ public class Main extends Application {
         ShipMoves ship2Moves = new ShipMoves(ship2Cells, moves, shipPatrolBoat);
         ship2Moves.createMoves();
 
+
         Ship ship3Cells = new Ship(40, 200, 40, 120, shipSubmarine);
         ShipMoves ship3Moves = new ShipMoves(ship3Cells, moves, shipSubmarine);
         ship3Moves.createMoves();
@@ -121,36 +122,32 @@ public class Main extends Application {
         //Shooting to target - missed
         enemyBoard.setOnMousePressed(event ->
         {
-            for(Ship checkShip : enemyShips)
-            {
-                if (checkShip.getShipX() == enemyBoard.getBoardX() && checkShip.getShipY() == enemyBoard.getBoardY())
+            for (Ship checkShips: enemyShips) {
+
+                if (checkShips.isHited(enemyBoard.getBoardX(), enemyBoard.getBoardY()))
                 {
                     Rectangle hit = new Rectangle(40,40);
+                    hit.setStroke(Color.BLACK);
+                    hit.setFill(Color.RED);
                     hit.setX(enemyBoard.getBoardX());
                     hit.setY(enemyBoard.getBoardY());
-                    hit.setFill(Color.RED);
-                    hit.setStroke(Color.BLACK);
                     enemyBoard.getChildren().addAll(hit);
-                }
-                if (checkShip.getLowerBoundsX() <= enemyBoard.getBoardX() && enemyBoard.getBoardX() <= checkShip.getUpperBoundsX()
-                && checkShip.getLowerBoundsY() <= enemyBoard.getBoardY() && enemyBoard.getBoardY() <= checkShip.getUpperBoundsY())
-                {
-                    Rectangle hit2 = new Rectangle(40,40);
-                    hit2.setX(enemyBoard.getBoardX());
-                    hit2.setY(enemyBoard.getBoardY());
-                    hit2.setFill(Color.RED);
-                    hit2.setStroke(Color.BLACK);
-                    enemyBoard.getChildren().addAll(hit2);
                 }
                 else
                 {
-                    int centerX = enemyBoard.getBoardX() + 20;
-                    int centerY = enemyBoard.getBoardY() + 20;
-                    Circle circle = new Circle(centerX, centerY, 7, Color.BLACK);
+                    Circle circle = new Circle(enemyBoard.getBoardX() + 20, enemyBoard.getBoardY() + 20, 7, Color.BLACK);
                     enemyBoard.getChildren().addAll(circle);
                 }
             }
         });
+
+
+
+
+
+
+
+
 
 
         ////////////////////////////////////////////////////////////

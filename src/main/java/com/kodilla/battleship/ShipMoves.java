@@ -1,5 +1,8 @@
 package com.kodilla.battleship;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ShipMoves
 {
     private Ship ship;
@@ -22,8 +25,6 @@ public class ShipMoves
         createShip.setOnMouseReleased(event ->
         {
             move.released(ship);
-            System.out.println(ship.getShipX());
-            System.out.println(ship.getShipY());
         });
 
         createShip.setOnMousePressed(event ->
