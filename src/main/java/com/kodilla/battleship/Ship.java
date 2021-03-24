@@ -3,6 +3,8 @@ package com.kodilla.battleship;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.util.stream.Stream;
+
 public class Ship
 {
     private double shipX;
@@ -19,12 +21,16 @@ public class Ship
     int actualWidth;
     int actualHeight;
 
+    private int hitCount;
+    private boolean shipIsDown;
+
     public Ship(double shipX, double shipY, double shipHeight, double shipWidth, Rectangle ship) {
         this.shipX = shipX;
         this.shipY = shipY;
         this.shipHeight = shipHeight;
         this.shipWidth = shipWidth;
         this.ship = ship;
+        hitCount = 0;
     }
 
     public double getShipX() {
@@ -122,19 +128,27 @@ public class Ship
         if ((getShipX() == boardX && getShipY() == boardY) || (getLowerBoundsX() <= boardX &&
             boardX <= getUpperBoundsX() && getLowerBoundsY() <= boardY && boardY <= getUpperBoundsY()))
         {
-            System.out.println("Ship X: " + getShipX());
-            System.out.println("Ship Y: " + getShipY());
-            System.out.println("Lower X: " + getLowerBoundsX());
-            System.out.println("Upper X: " + getUpperBoundsX());
-            System.out.println("Lower Y: " + getLowerBoundsY());
-            System.out.println("Upper Y: " + getUpperBoundsY());
-            System.out.println("Board X: " + boardX);
-            System.out.println("Board Y: " + boardY);
+            if (hitCount == actualWidth/40)
+            {
+                shipIsDown = true;
+            }
+            else
+            {
+                shipIsDown = false;
+            }
+
+            hitCount++;
+
             return true;
         }
         else
         {
             return false;
         }
+    }
+
+    public boolean isDown()
+    {
+       return shipIsDown;
     }
 }
