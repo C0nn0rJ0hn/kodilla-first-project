@@ -1,9 +1,12 @@
 package com.kodilla.battleship;
 
+import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Ship
 {
@@ -18,11 +21,15 @@ public class Ship
     private double upperBoundsX;
     private double upperBoundsY;
 
-    int actualWidth;
-    int actualHeight;
+    private List<Rectangle> rectangleList = new ArrayList<>();
 
-    private int hitCount;
-    private boolean shipIsDown;
+    private int hitCount = 0;
+
+    private int declaredWidth;
+    private int declaredHeight;
+
+    private boolean isVertical;
+
 
     public Ship(double shipX, double shipY, double shipHeight, double shipWidth, Rectangle ship) {
         this.shipX = shipX;
@@ -30,7 +37,14 @@ public class Ship
         this.shipHeight = shipHeight;
         this.shipWidth = shipWidth;
         this.ship = ship;
-        hitCount = 0;
+        this.isVertical = false;
+        this.declaredWidth = (int)shipWidth;
+        this.declaredHeight = (int)shipHeight;
+        this.lowerBoundsY = getLowerBoundsY();
+        this.lowerBoundsX = getLowerBoundsX();
+        this.upperBoundsY = getUpperBoundsY();
+        this.upperBoundsX = getUpperBoundsX();
+
     }
 
     public double getShipX() {
@@ -81,11 +95,10 @@ public class Ship
 
     public void makeVertical()
     {
-        actualWidth = (int)shipWidth;
-        actualHeight = (int)shipHeight;
+        setShipWidth(declaredHeight);
+        setShipHeight(declaredWidth);
 
-        setShipWidth(actualHeight);
-        setShipHeight(actualWidth);
+        isVertical = true;
     }
 
     public double getLowerBoundsX() {
@@ -94,49 +107,55 @@ public class Ship
     }
 
     public double getUpperBoundsX() {
-        if (shipWidth == 40)
-        {
-            upperBoundsX = shipX + 20;
-        }
-        else
-        {
-            upperBoundsX = shipX + shipWidth - 40;
-
-        }
+        upperBoundsX = shipX + shipWidth - 40;
         return upperBoundsX;
     }
+
 
     public double getLowerBoundsY() {
         lowerBoundsY = shipY;
         return lowerBoundsY;
     }
 
+
     public double getUpperBoundsY() {
-        if (shipHeight == 40)
-        {
-            upperBoundsY = shipY + 20;
-        }
-        else
-        {
-            upperBoundsY = shipY + shipHeight - 40;
-        }
+        upperBoundsY = shipY + shipHeight - 40;
         return upperBoundsY;
     }
 
-    public boolean isHited(int boardX, int boardY)
+
+    public boolean isDown()
+    {
+        if (isVertical)
+        {
+            if (hitCount == shipHeight/40)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if (hitCount == shipWidth/40)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+    }
+
+    public boolean isHit(int boardX, int boardY)
     {
         if ((getShipX() == boardX && getShipY() == boardY) || (getLowerBoundsX() <= boardX &&
             boardX <= getUpperBoundsX() && getLowerBoundsY() <= boardY && boardY <= getUpperBoundsY()))
         {
-            if (hitCount == actualWidth/40)
-            {
-                shipIsDown = true;
-            }
-            else
-            {
-                shipIsDown = false;
-            }
-
             hitCount++;
 
             return true;
@@ -147,8 +166,30 @@ public class Ship
         }
     }
 
-    public boolean isDown()
+    public void addRect(Rectangle rectangle)
     {
-       return shipIsDown;
+        rectangleList.add(rectangle);
     }
+
+    public List<Rectangle> getRectangleList() {
+        return rectangleList;
+    }
+
+    //Method to check if ship will fit in grid size
+    /*public boolean fitShipOnBoard( int x, int y)
+    {
+        int rowMinX = 40;
+        int columnMinY = 40;
+        int rowMaxX = 440;
+        int columnMaxY = 440;
+
+        if (rowMinX <= x + shipWidth && x + shipWidth <= rowMaxX && columnMinY <= y + shipHeight && y + shipHeight <= columnMaxY)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }*/
 }

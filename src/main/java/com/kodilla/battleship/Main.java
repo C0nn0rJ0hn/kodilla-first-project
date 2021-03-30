@@ -3,10 +3,13 @@ package com.kodilla.battleship;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -15,24 +18,199 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
+
+import java.util.*;
 
 
 public class Main extends Application {
 
     Stage window;
+    int shipsOnEnemyBoard = 6;
+    int shipsOnPlayerBoard = 6;
+    Random r = new Random();
 
-    public static void main(String[] args) {
-        launch(args);
+
+
+
+    //Create boards
+    BuildBoard playerBoard = new BuildBoard(11, 11, 40);
+    BuildBoard enemyBoard = new BuildBoard(11, 11, 40);
+
+    //Ship lists
+    List<Ship> playerShips = new ArrayList<>();
+    List<Ship> enemyShips = new ArrayList<>();
+
+    //List storing coordinates of enemy shooting
+    List<Point2D> enemyCoordinates = new ArrayList<>();
+
+    //List storing coordinates of player shooting
+    List<Point2D> playerCoordinates = new ArrayList<>();
+
+
+
+    public void enemyMove()
+    {
+        int x = (r.nextInt(10) + 1) * 40;
+        int y = (r.nextInt(10) + 1) * 40;
+
+        Point2D point = new Point2D(x,y);
+
+        if (!enemyCoordinates.contains(point))
+        {
+            enemyCoordinates.add(point);
+
+            if (playerShips.get(0).isHit(x,y))
+            {
+                Rectangle hit = new Rectangle(40,40);
+                hit.setStroke(Color.BLACK);
+                hit.setFill(Color.YELLOWGREEN);
+                hit.setX(x);
+                hit.setY(y);
+                playerBoard.getChildren().addAll(hit);
+                playerShips.get(0).addRect(hit);
+                if (playerShips.get(0).isDown())
+                {
+                    shipsOnPlayerBoard--;
+                    playerShips.get(0).getRectangleList().forEach(e -> e.setFill(Color.RED));
+                }
+            }
+            else if (playerShips.get(1).isHit(x,y))
+            {
+                Rectangle hit = new Rectangle(40,40);
+                hit.setStroke(Color.BLACK);
+                hit.setFill(Color.YELLOWGREEN);
+                hit.setX(x);
+                hit.setY(y);
+                playerBoard.getChildren().addAll(hit);
+                playerShips.get(1).addRect(hit);
+                if (playerShips.get(1).isDown())
+                {
+                    shipsOnPlayerBoard--;
+                    playerShips.get(1).getRectangleList().forEach(e -> e.setFill(Color.RED));
+                }
+            }
+            else if (playerShips.get(2).isHit(x,y))
+            {
+                Rectangle hit = new Rectangle(40,40);
+                hit.setStroke(Color.BLACK);
+                hit.setFill(Color.YELLOWGREEN);
+                hit.setX(x);
+                hit.setY(y);
+                playerBoard.getChildren().addAll(hit);
+                playerShips.get(2).addRect(hit);
+                if (playerShips.get(2).isDown())
+                {
+                    shipsOnPlayerBoard--;
+                    playerShips.get(2).getRectangleList().forEach(e -> e.setFill(Color.RED));
+                }
+            }
+            else if (playerShips.get(3).isHit(x,y)) {
+                Rectangle hit = new Rectangle(40, 40);
+                hit.setStroke(Color.BLACK);
+                hit.setFill(Color.YELLOWGREEN);
+                hit.setX(x);
+                hit.setY(y);
+                playerBoard.getChildren().addAll(hit);
+                playerShips.get(3).addRect(hit);
+                if (playerShips.get(3).isDown()) {
+                    shipsOnPlayerBoard--;
+                    playerShips.get(3).getRectangleList().forEach(e -> e.setFill(Color.RED));
+                }
+            }
+            else if (playerShips.get(4).isHit(x,y)) {
+                Rectangle hit = new Rectangle(40, 40);
+                hit.setStroke(Color.BLACK);
+                hit.setFill(Color.YELLOWGREEN);
+                hit.setX(x);
+                hit.setY(y);
+                playerBoard.getChildren().addAll(hit);
+                playerShips.get(4).addRect(hit);
+                if (playerShips.get(4).isDown()) {
+                    shipsOnPlayerBoard--;
+                    playerShips.get(4).getRectangleList().forEach(e -> e.setFill(Color.RED));
+                }
+            }
+            else if (playerShips.get(5).isHit(x,y)) {
+                Rectangle hit = new Rectangle(40, 40);
+                hit.setStroke(Color.BLACK);
+                hit.setFill(Color.YELLOWGREEN);
+                hit.setX(x);
+                hit.setY(y);
+                playerBoard.getChildren().addAll(hit);
+                playerShips.get(5).addRect(hit);
+                if (playerShips.get(5).isDown()) {
+                    shipsOnPlayerBoard--;
+                    playerShips.get(5).getRectangleList().forEach(e -> e.setFill(Color.RED));
+                }
+            }
+            else
+            {
+                Circle circle = new Circle(x + 20,y + 20, 7, Color.BLACK);
+                playerBoard.getChildren().addAll(circle);
+            }
+            if (shipsOnPlayerBoard == 0 && shipsOnEnemyBoard > 0)
+            {
+                gameResultLost();
+            }
+        }
+        else
+        {
+            enemyMove();
+        }
     }
+
+
+    private void closeProgram() {
+        Boolean answer = ConfirmBox.display("EXIT GAME", "Are you sure you want to exit?");
+        if (answer) {
+            window.close();
+        }
+    }
+
+    private void gameResultWin() {
+        ConfirmWin.display("RESULT", "You WON the Battleship game!");
+
+    }
+
+    private void gameResultLost() {
+        ConfirmWin.display("RESULT", "You LOST the Battleship game!");
+
+    }
+
+    //Method to check if random x and y do not collide with ship neighbours
+    /*public boolean getNeighbors(int x, int y, List<Ship> shipList)
+    {
+        boolean canPlaceShip = true;
+        for (Ship check : shipList)
+        {
+            if (check.getShipX()-40 <= x && x <= check.getShipX() + check.getShipWidth() && check.getShipY()-40 <= y
+                    && y <= check.getShipY() + check.getShipHeight())
+            {
+                canPlaceShip = false;
+            }
+            else
+            {
+                canPlaceShip = true;
+            }
+        }
+        return canPlaceShip;
+    }*/
 
     @Override
     public void start(Stage primaryStage) {
 
         window = primaryStage;
+        window.setOnCloseRequest(e ->
+        {
+            e.consume();
+            closeProgram();
+        });
+
+        window.addEventHandler(KeyEvent.KEY_RELEASED, (KeyEvent event) -> {
+            if (KeyCode.ESCAPE == event.getCode()) {
+                closeProgram();
+            }
+        });
 
         GridPane root = new GridPane();
 
@@ -45,10 +223,6 @@ public class Main extends Application {
         Label enemyBoardLabel = new Label("Enemy Board");
         enemyBoardLabel.setFont(new Font("Arial", 25));
         titleEnemy.getChildren().add(enemyBoardLabel);
-
-        //Create boards
-        BuildBoard playerBoard = new BuildBoard(11, 11, 40);
-        BuildBoard enemyBoard = new BuildBoard(11, 11, 40);
 
         //Create ships
         CreateShips shipBoat = new CreateShips(Color.BLUE, Color.BLACK);
@@ -63,7 +237,6 @@ public class Main extends Application {
         Moves moves = new Moves();
         ShipMoves ship1Moves = new ShipMoves(ship1Cell, moves, shipBoat);
         ship1Moves.createMoves();
-
 
         Ship ship2Cells = new Ship(40, 120, 40, 80, shipPatrolBoat);
         ShipMoves ship2Moves = new ShipMoves(ship2Cells, moves, shipPatrolBoat);
@@ -85,41 +258,20 @@ public class Main extends Application {
         ShipMoves ship6Moves = new ShipMoves(ship5Cells, moves, shipCarrier);
         ship6Moves.createMoves();
 
-        Random r = new Random();
-
-        List<Ship> allShips = List.of(ship1Cell, ship2Cells, ship3Cells, ship3Cells2, ship4Cells, ship5Cells);
-
+        //Create start game button
         Button startButton = new Button("Start Game");
-
         EventHandler<MouseEvent> handler = MouseEvent::consume;
-
-        List<Double> playerShips = new ArrayList<>();
-
         startButton.setOnMousePressed(event -> {
+            playerShips.add(ship1Cell);
+            playerShips.add(ship2Cells);
+            playerShips.add(ship3Cells);
+            playerShips.add(ship3Cells2);
+            playerShips.add(ship4Cells);
+            playerShips.add(ship5Cells);
 
-            for (Ship shipCoordinates : allShips)
-            {
-                if (shipCoordinates.isHited(40,40))
-                {
-                    Rectangle hit = new Rectangle(40,40);
-                    hit.setStroke(Color.BLACK);
-                    hit.setFill(Color.RED);
-                    hit.setX(40);
-                    hit.setY(40);
-                    playerBoard.getChildren().addAll(hit);
-                }
-            }
             playerBoard.addEventFilter(MouseEvent.MOUSE_DRAGGED, handler);
             startButton.setDisable(true);
         });
-
-
-        //Shooting to target(missed, hit) - player board
-
-
-
-
-
 
         //Enemy board ships
         CreateShips enemyBoat = new CreateShips(Color.TRANSPARENT, Color.BLACK);
@@ -129,142 +281,279 @@ public class Main extends Application {
         CreateShips enemyBattleship = new CreateShips(Color.TRANSPARENT, Color.BLACK);
         CreateShips enemyCarrier = new CreateShips(Color.TRANSPARENT, Color.BLACK);
 
+        Ship enemyShip1Cell = new Ship(160, 80, 80, 40, enemyBoat);
+        Ship enemyShip2Cells = new Ship(320, 200, 40, 80, enemyPatrolBoat);
+        enemyShip2Cells.makeVertical();
+        Ship enemyShip3Cells = new Ship(280, 320, 40, 120, enemySubmarine);
+        Ship enemyShip3Cells2 = new Ship(80, 160, 40, 120, enemyDestroyer);
+        enemyShip3Cells2.makeVertical();
+        Ship enemyShip4Cells = new Ship(240, 40, 40, 160, enemyBattleship);
+        Ship enemyShip5Cells = new Ship(200, 240, 40, 200, enemyCarrier);
+        enemyShip5Cells.makeVertical();
 
-        for (int i = 0; i < 6; i++)
+
+
+        //Generate random enemy ships placement
+        /*for (int i = 0; i < 100; i++)
         {
-            int randomX= (r.nextInt(10) + 1) * 40;
-            int randomY = (r.nextInt(10) + 1) * 40;
-            //System.out.println("randomX = " + randomX + " randomY = " + randomY);
+            int x = (r.nextInt(10) + 1) * 40;
+            int y = (r.nextInt(10) + 1) * 40;
+            boolean isVertical = r.nextBoolean();
+            if (isVertical)
+            {
+                enemyShip5Cells.makeVertical();
+            }
 
+            if (enemyShip5Cells.fitShipOnBoard(x, y))
+            {
+                enemyShip5Cells.setShipX(x);
+                enemyShip5Cells.setShipY(y);
+                enemyShips.add(enemyShip5Cells);
+                break;
+            }
+            else
+            {
+                continue;
+            }
         }
 
-        Ship enemyShip1Cell = new Ship(40, 40, 40, 40, enemyBoat);
-        Ship enemyShip2Cells = new Ship(360, 80, 40, 80, enemyPatrolBoat);
-        Ship enemyShip3Cells = new Ship(80, 320, 40, 120, enemySubmarine);
-        Ship enemyShip3Cells2 = new Ship(320, 160, 40, 120, enemyDestroyer);
-        Ship enemyShip4Cells = new Ship(160, 200, 40, 160, enemyBattleship);
-        Ship enemyShip5Cells = new Ship(120, 80, 40, 200, enemyCarrier);
-
-
-        List<Ship> enemyShips = List.of(enemyShip1Cell, enemyShip2Cells, enemyShip3Cells, enemyShip3Cells2, enemyShip4Cells, enemyShip5Cells);
-
-
-        //Random vertical
-        /*for (Ship randomShipVertical : enemyShips)
+        for (int i = 0; i < 100; i++)
         {
-            int randomVertical = r.nextInt(10);
-            if (randomVertical % 2 == 0)
+            int x = (r.nextInt(10) + 1) * 40;
+            int y = (r.nextInt(10) + 1) * 40;
+
+            boolean isVertical = r.nextBoolean();
+            if (isVertical)
             {
-                randomShipVertical.makeVertical();
+                enemyShip4Cells.makeVertical();
+            }
+            if (getNeighbors(x,y, enemyShips))
+            {
+                if (enemyShip4Cells.fitShipOnBoard(x,y))
+                {
+                    enemyShip4Cells.setShipX(x);
+                    enemyShip4Cells.setShipY(y);
+                    enemyShips.add(enemyShip4Cells);
+                    break;
+                }
+            }
+            else
+            {
+                continue;
+            }
+        }
+
+        for (int i = 0; i < 100; i++)
+        {
+            int x = (r.nextInt(10) + 1) * 40;
+            int y = (r.nextInt(10) + 1) * 40;
+
+            boolean isVertical = r.nextBoolean();
+            if (isVertical)
+            {
+                enemyShip3Cells.makeVertical();
+            }
+            if (getNeighbors(x,y, enemyShips))
+            {
+                if (enemyShip3Cells2.fitShipOnBoard(x,y))
+                {
+                    enemyShip3Cells2.setShipX(x);
+                    enemyShip3Cells2.setShipY(y);
+                    enemyShips.add(enemyShip3Cells2);
+                    break;
+                }
+            }
+            else
+            {
+                continue;
+            }
+        }
+
+        for (int i = 0; i < 100; i++)
+        {
+            int x = (r.nextInt(10) + 1) * 40;
+            int y = (r.nextInt(10) + 1) * 40;
+
+            boolean isVertical = r.nextBoolean();
+            if (isVertical)
+            {
+                enemyShip3Cells2.makeVertical();
+            }
+            if (getNeighbors(x,y, enemyShips))
+            {
+                if (enemyShip3Cells.fitShipOnBoard(x,y))
+                {
+                    enemyShip3Cells.setShipX(x);
+                    enemyShip3Cells.setShipY(y);
+                    enemyShips.add(enemyShip3Cells);
+                    break;
+                }
+            }
+            else
+            {
+                continue;
+            }
+        }
+
+        for (int i = 0; i < 100; i++)
+        {
+            int x = (r.nextInt(10) + 1) * 40;
+            int y = (r.nextInt(10) + 1) * 40;
+
+            boolean isVertical = r.nextBoolean();
+            if (isVertical)
+            {
+                enemyShip2Cells.makeVertical();
+            }
+            if (getNeighbors(x,y, enemyShips))
+            {
+                if (enemyShip2Cells.fitShipOnBoard(x,y))
+                {
+                    enemyShip2Cells.setShipX(x);
+                    enemyShip2Cells.setShipY(y);
+                    enemyShips.add(enemyShip2Cells);
+                    break;
+                }
+            }
+            else
+            {
+                continue;
+            }
+        }
+
+        for (int i = 0; i < 100; i++)
+        {
+            int x = (r.nextInt(10) + 1) * 40;
+            int y = (r.nextInt(10) + 1) * 40;
+
+            if (getNeighbors(x,y, enemyShips))
+            {
+                if (enemyShip1Cell.fitShipOnBoard(x,y))
+                {
+                    enemyShip1Cell.setShipX(x);
+                    enemyShip1Cell.setShipY(y);
+                    enemyShips.add(enemyShip1Cell);
+                    break;
+                }
+            }
+            else
+            {
+                continue;
             }
         }*/
 
-        AtomicInteger shipsOnBoard = new AtomicInteger(6);
         //Shooting to target (missed, hit) - enemy board
         enemyBoard.setOnMousePressed(event ->
                 {
-                    if (enemyShip1Cell.isHited(enemyBoard.getBoardX(), enemyBoard.getBoardY()))
+                    Point2D point = new Point2D(enemyBoard.getBoardX(), enemyBoard.getBoardY());
+
+                    if (!playerCoordinates.contains(point))
                     {
-                        Rectangle hit = new Rectangle(40,40);
-                        hit.setStroke(Color.BLACK);
-                        hit.setFill(Color.RED);
-                        hit.setX(enemyBoard.getBoardX());
-                        hit.setY(enemyBoard.getBoardY());
-                        enemyBoard.getChildren().addAll(hit);
-                        if (enemyShip1Cell.isDown())
+                        playerCoordinates.add(point);
+
+                        if (enemyShip1Cell.isHit(enemyBoard.getBoardX(), enemyBoard.getBoardY()))
                         {
-                            shipsOnBoard.decrementAndGet();
-                            System.out.println(shipsOnBoard);
+                            Rectangle hit = new Rectangle(40,40);
+                            hit.setStroke(Color.BLACK);
+                            hit.setFill(Color.YELLOWGREEN);
+                            hit.setX(enemyBoard.getBoardX());
+                            hit.setY(enemyBoard.getBoardY());
+                            enemyBoard.getChildren().addAll(hit);
+                            enemyShip1Cell.addRect(hit);
+                            if (enemyShip1Cell.isDown())
+                            {
+                                shipsOnEnemyBoard--;
+                                enemyShip1Cell.getRectangleList().forEach(e -> e.setFill(Color.RED));
+                            }
                         }
-                    }
-                    else if (enemyShip2Cells.isHited(enemyBoard.getBoardX(), enemyBoard.getBoardY()))
-                    {
-                        Rectangle hit = new Rectangle(40,40);
-                        hit.setStroke(Color.BLACK);
-                        hit.setFill(Color.RED);
-                        hit.setX(enemyBoard.getBoardX());
-                        hit.setY(enemyBoard.getBoardY());
-                        enemyBoard.getChildren().addAll(hit);
-                        if (enemyShip2Cells.isDown())
+                        else if (enemyShip2Cells.isHit(enemyBoard.getBoardX(), enemyBoard.getBoardY()))
                         {
-                            shipsOnBoard.decrementAndGet();
-                            System.out.println(shipsOnBoard);
+                            Rectangle hit = new Rectangle(40,40);
+                            hit.setStroke(Color.BLACK);
+                            hit.setFill(Color.YELLOWGREEN);
+                            hit.setX(enemyBoard.getBoardX());
+                            hit.setY(enemyBoard.getBoardY());
+                            enemyBoard.getChildren().addAll(hit);
+                            enemyShip2Cells.addRect(hit);
+                            if (enemyShip2Cells.isDown())
+                            {
+                                shipsOnEnemyBoard--;
+                                enemyShip2Cells.getRectangleList().forEach(e -> e.setFill(Color.RED));
+                            }
                         }
-                    }
-                    else if (enemyShip3Cells.isHited(enemyBoard.getBoardX(), enemyBoard.getBoardY()))
-                    {
-                        Rectangle hit = new Rectangle(40,40);
-                        hit.setStroke(Color.BLACK);
-                        hit.setFill(Color.RED);
-                        hit.setX(enemyBoard.getBoardX());
-                        hit.setY(enemyBoard.getBoardY());
-                        enemyBoard.getChildren().addAll(hit);
-                        if (enemyShip3Cells.isDown())
+                        else if (enemyShip3Cells.isHit(enemyBoard.getBoardX(), enemyBoard.getBoardY()))
                         {
-                            shipsOnBoard.decrementAndGet();
-                            System.out.println(shipsOnBoard);
+                            Rectangle hit = new Rectangle(40,40);
+                            hit.setStroke(Color.BLACK);
+                            hit.setFill(Color.YELLOWGREEN);
+                            hit.setX(enemyBoard.getBoardX());
+                            hit.setY(enemyBoard.getBoardY());
+                            enemyBoard.getChildren().addAll(hit);
+                            enemyShip3Cells.addRect(hit);
+                            if (enemyShip3Cells.isDown())
+                            {
+                                shipsOnEnemyBoard--;
+                                enemyShip3Cells.getRectangleList().forEach(e -> e.setFill(Color.RED));
+                            }
                         }
-                    }
-                    else if (enemyShip3Cells2.isHited(enemyBoard.getBoardX(), enemyBoard.getBoardY()))
-                    {
-                        Rectangle hit = new Rectangle(40,40);
-                        hit.setStroke(Color.BLACK);
-                        hit.setFill(Color.RED);
-                        hit.setX(enemyBoard.getBoardX());
-                        hit.setY(enemyBoard.getBoardY());
-                        enemyBoard.getChildren().addAll(hit);
-                        if (enemyShip3Cells2.isDown())
+                        else if (enemyShip3Cells2.isHit(enemyBoard.getBoardX(), enemyBoard.getBoardY()))
                         {
-                            shipsOnBoard.decrementAndGet();
-                            System.out.println(shipsOnBoard);
+                            Rectangle hit = new Rectangle(40,40);
+                            hit.setStroke(Color.BLACK);
+                            hit.setFill(Color.YELLOWGREEN);
+                            hit.setX(enemyBoard.getBoardX());
+                            hit.setY(enemyBoard.getBoardY());
+                            enemyBoard.getChildren().addAll(hit);
+                            enemyShip3Cells2.addRect(hit);
+                            if (enemyShip3Cells2.isDown())
+                            {
+                                shipsOnEnemyBoard--;
+                                enemyShip3Cells2.getRectangleList().forEach(e -> e.setFill(Color.RED));
+                            }
                         }
-                    }
-                    else if (enemyShip4Cells.isHited(enemyBoard.getBoardX(), enemyBoard.getBoardY()))
-                    {
-                        Rectangle hit = new Rectangle(40,40);
-                        hit.setStroke(Color.BLACK);
-                        hit.setFill(Color.RED);
-                        hit.setX(enemyBoard.getBoardX());
-                        hit.setY(enemyBoard.getBoardY());
-                        enemyBoard.getChildren().addAll(hit);
-                        if (enemyShip4Cells.isDown())
+                        else if (enemyShip4Cells.isHit(enemyBoard.getBoardX(), enemyBoard.getBoardY()))
                         {
-                            shipsOnBoard.decrementAndGet();
-                            System.out.println(shipsOnBoard);
+                            Rectangle hit = new Rectangle(40,40);
+                            hit.setStroke(Color.BLACK);
+                            hit.setFill(Color.YELLOWGREEN);
+                            hit.setX(enemyBoard.getBoardX());
+                            hit.setY(enemyBoard.getBoardY());
+                            enemyBoard.getChildren().addAll(hit);
+                            enemyShip4Cells.addRect(hit);
+                            if (enemyShip4Cells.isDown())
+                            {
+                                shipsOnEnemyBoard--;
+                                enemyShip4Cells.getRectangleList().forEach(e -> e.setFill(Color.RED));
+                            }
                         }
-                    }
-                    else if (enemyShip5Cells.isHited(enemyBoard.getBoardX(), enemyBoard.getBoardY()))
-                    {
-                        Rectangle hit = new Rectangle(40,40);
-                        hit.setStroke(Color.BLACK);
-                        hit.setFill(Color.RED);
-                        hit.setX(enemyBoard.getBoardX());
-                        hit.setY(enemyBoard.getBoardY());
-                        enemyBoard.getChildren().addAll(hit);
-                        if (enemyShip5Cells.isDown())
+                        else if (enemyShip5Cells.isHit(enemyBoard.getBoardX(), enemyBoard.getBoardY()))
                         {
-                            shipsOnBoard.decrementAndGet();
-                            System.out.println(shipsOnBoard);
+                            Rectangle hit = new Rectangle(40,40);
+                            hit.setStroke(Color.BLACK);
+                            hit.setFill(Color.YELLOWGREEN);
+                            hit.setX(enemyBoard.getBoardX());
+                            hit.setY(enemyBoard.getBoardY());
+                            enemyBoard.getChildren().addAll(hit);
+                            enemyShip5Cells.addRect(hit);
+                            if (enemyShip5Cells.isDown())
+                            {
+                                shipsOnEnemyBoard--;
+                                enemyShip5Cells.getRectangleList().forEach(e -> e.setFill(Color.RED));
+                            }
                         }
-                    }
-                    else
-                    {
-                        Circle circle = new Circle(enemyBoard.getBoardX() + 20, enemyBoard.getBoardY() + 20, 7, Color.BLACK);
-                        enemyBoard.getChildren().addAll(circle);
+                        else
+                        {
+                            Circle circle = new Circle(enemyBoard.getBoardX() + 20, enemyBoard.getBoardY() + 20, 7, Color.BLACK);
+                            enemyBoard.getChildren().addAll(circle);
+                            enemyMove();
+                        }
+                        if (shipsOnEnemyBoard == 0 && shipsOnPlayerBoard > 0 )
+                        {
+                            gameResultWin();
+                        }
                     }
                 });
 
-        System.out.println(shipsOnBoard.get());
-
-
-
-
-
-
-
-
-
-            ////////////////////////////////////////////////////////////
         //Create buttons
         Buttons boat = new Buttons("Boat");
         Buttons patrolBoat = new Buttons("Patrol Boat");
@@ -292,7 +581,7 @@ public class Main extends Application {
         ButtonAction carrierAction = new ButtonAction(playerBoard, shipCarrier, carrier);
         carrierAction.setAction();
 
-
+        //Layout for scene
         HBox buttonsBar = new HBox(8);
         HBox.setHgrow(boat, Priority.ALWAYS);
         HBox.setHgrow(patrolBoat, Priority.ALWAYS);
@@ -331,16 +620,8 @@ public class Main extends Application {
         window.show();
     }
 
-    public void winnerPlayer(List<Ship> playerList, List<Ship> enemyList)
-    {
-        if (playerList.size() == 0 && enemyList.size() > 0)
-        {
-            System.out.println("You Win");
-        }
-        else
-        {
-            System.out.println("You Lost");
-        }
+    public static void main(String[] args) {
+        launch(args);
     }
-
 }
+
